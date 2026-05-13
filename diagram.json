@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "author": "Zero Flame Project",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": 0, "left": 0, "attrs": {} },
+    { "type": "wokwi-lcd1602-i2c", "id": "lcd", "top": -150, "left": -50, "attrs": {} },
+    { "type": "wokwi-gas-sensor", "id": "gas1", "top": 50, "left": -250, "attrs": {} },
+    { "type": "wokwi-ntc-temperature-sensor", "id": "ntc", "top": 180, "left": -250, "attrs": {} },
+    { "type": "wokwi-buzzer", "id": "buzzer", "top": 80, "left": 180, "attrs": {} },
+    { "type": "wokwi-relay-module", "id": "relay", "top": -50, "left": 180, "attrs": {} },
+    { "type": "wokwi-led", "id": "led_rojo", "top": 160, "left": 180, "attrs": { "color": "red" } },
+    { "type": "wokwi-resistor", "id": "r1", "top": 198, "left": 220, "attrs": { "value": "220" } },
+    { "type": "wokwi-led", "id": "led_verde", "top": 240, "left": 180, "attrs": { "color": "green" } },
+    { "type": "wokwi-resistor", "id": "r2", "top": 278, "left": 220, "attrs": { "value": "220" } }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "lcd:GND", "esp:GND.1", "black", [ "v0" ] ],
+    [ "lcd:VCC", "esp:5V", "red", [ "v0" ] ],
+    [ "lcd:SDA", "esp:21", "green", [ "v0" ] ],
+    [ "lcd:SCL", "esp:22", "blue", [ "v0" ] ],
+    [ "gas1:GND", "esp:GND.1", "black", [ "v0" ] ],
+    [ "gas1:VCC", "esp:5V", "red", [ "v0" ] ],
+    [ "gas1:AOUT", "esp:34", "yellow", [ "v0" ] ],
+    [ "ntc:GND", "esp:GND.1", "black", [ "v0" ] ],
+    [ "ntc:VCC", "esp:3V3", "red", [ "v0" ] ],
+    [ "ntc:OUT", "esp:35", "orange", [ "v0" ] ],
+    [ "buzzer:1", "esp:GND.1", "black", [ "v0" ] ],
+    [ "buzzer:2", "esp:25", "purple", [ "v0" ] ],
+    [ "relay:GND", "esp:GND.1", "black", [ "v0" ] ],
+    [ "relay:VCC", "esp:5V", "red", [ "v0" ] ],
+    [ "relay:IN", "esp:26", "gray", [ "v0" ] ],
+    [ "led_rojo:A", "esp:27", "red", [ "v0" ] ],
+    [ "led_rojo:C", "r1:2", "black", [ "v0" ] ],
+    [ "r1:1", "esp:GND.1", "black", [ "v0" ] ],
+    [ "led_verde:A", "esp:14", "green", [ "v0" ] ],
+    [ "led_verde:C", "r2:2", "black", [ "v0" ] ],
+    [ "r2:1", "esp:GND.1", "black", [ "v0" ] ]
+  ]
+}
