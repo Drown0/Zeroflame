@@ -3,7 +3,7 @@
 #include <PubSubClient.h>
 #include <LiquidCrystal_I2C.h>
 
-// --- PINES ESP32 ---
+//PINES ESP32
 const int PIN_GAS = 34;    
 const int PIN_TEMP = 35;   
 const int PIN_SIRENA = 25; 
@@ -11,18 +11,18 @@ const int PIN_RELE = 26;
 const int PIN_ROJO = 27;   
 const int PIN_VERDE = 14;  
 
-// --- UMBRALES Y CONSTANTES ---
+//UMBRALES Y CONSTANTES
 const int UMBRAL_GAS_PPM = 1000; 
 const int UMBRAL_TEMP = 70;
 const float BETA = 3950; 
 
-// --- CONFIGURACIÓN MQTT Y WIFI ---
+//CONFIGURACIÓN MQTT Y WIFI
 const char* ssid = "Wokwi-GUEST";
 const char* password = "";
 const char* mqtt_server = "broker.hivemq.com";
 const int mqtt_port = 1883;
 
-// --- TÓPICOS MQTT 
+//MQTT
 const char* topic_gas = "ubo/g5/sensor/gas";
 const char* topic_temp = "ubo/g5/sensor/temperatura";
 const char* topic_estado = "ubo/g5/sensor/estado";
@@ -36,7 +36,7 @@ unsigned long previousMillisSensors = 0;
 const long intervalSensors = 2000; 
 bool comandoEmergenciaManual = false;
 
-// --- DECLARACIÓN DE FUNCIONES ---
+//DECLARACIÓN DE FUNCIONES
 float calcularPPM(int lectura);
 void setup_wifi();
 void reconnect();
@@ -45,7 +45,7 @@ void callback(char* topic, byte* payload, unsigned int length);
 void setup() {
   Serial.begin(115200);
 
-  // Volvemos al pinMode simple
+  //pinMode
   pinMode(PIN_SIRENA, OUTPUT);
   pinMode(PIN_RELE, OUTPUT);
   pinMode(PIN_ROJO, OUTPUT);
@@ -74,7 +74,7 @@ void loop() {
   if (currentMillis - previousMillisSensors >= intervalSensors) {
     previousMillisSensors = currentMillis;
 
-    // 1. LECTURAS
+    //LECTURAS
     int lecturaRawGas = analogRead(PIN_GAS);
     float ppm = calcularPPM(lecturaRawGas);
     
@@ -84,22 +84,22 @@ void loop() {
       temperaturaC = 1 / (log(1 / (4095. / lecturaTemp - 1)) / BETA + 1.0 / 298.15) - 273.15;
     }
 
-    // Impresión limpia en consola con RAW incluido
+    //Impresión en consola
     Serial.print("RAW Gas: "); Serial.print(lecturaRawGas);
     Serial.print(" | PPM: "); Serial.print(ppm);
     Serial.print(" | Temp: "); Serial.println(temperaturaC);
 
-    // 2. ACTUALIZAR PANTALLA
+    //ACTUALIZAR PANTALLA
     lcd.setCursor(0, 0);
     lcd.print("Gas:"); lcd.print((int)ppm); lcd.print("ppm   "); 
     lcd.setCursor(0, 1);
     lcd.print("T:"); lcd.print((int)temperaturaC); lcd.print("C     ");
 
-    // 3. PUBLICAR EN MQTT
+    //PUBLICAR EN MQTT
     client.publish(topic_gas, String(ppm).c_str());
     client.publish(topic_temp, String(temperaturaC).c_str());
 
-    // 4. LÓGICA DE CONTROL LOCAL Y ESTADOS (Simple y estable)
+    //LÓGICA DE CONTROL LOCAL Y ESTADOS (Simple y estable)
     if (ppm > UMBRAL_GAS_PPM || temperaturaC > UMBRAL_TEMP || comandoEmergenciaManual) {
       digitalWrite(PIN_RELE, HIGH);
       digitalWrite(PIN_ROJO, HIGH);
@@ -121,7 +121,7 @@ void loop() {
   }
 }
 
-// --- FUNCIÓN CALIBRADA EXACTA PARA EL WOKWI GAS SENSOR ---
+//FUNCIÓN GAS SENSOR
 float calcularPPM(int lectura) {
   if (lectura <= 843) {
     return 0.1;
@@ -132,7 +132,7 @@ float calcularPPM(int lectura) {
   }
 }
 
-// --- FUNCIONES DE RED Y MQTT ---
+//FUNCIONES DE RED Y MQTT
 void setup_wifi() {
   delay(10);
   Serial.println();
